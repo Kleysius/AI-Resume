@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { copy, linkIcon, loader, tick } from "../assets";
+import { copy, linkIcon, loader, tick, cancel } from "../assets";
 import { useLazyGetSummaryQuery } from "../services/article";
 
 const Demo = () => {
@@ -43,6 +43,12 @@ const Demo = () => {
     navigator.clipboard.writeText(copyUrl);
     setTimeout(() => setCopied(false), 3000);
   }
+
+  const handleDelete = (url) => {
+    const updatedArticles = allArticles.filter((item) => item.url !== url);
+    setAllArticles(updatedArticles);
+    localStorage.setItem("articles", JSON.stringify(updatedArticles));
+  };
 
   return (
     <section className="mt-16 w-full max-w-xl">
@@ -90,6 +96,13 @@ const Demo = () => {
               <p className="flex-1 font-satoshi text-blue-700 font-medium text-sm truncate">
                 {item.url}
               </p>
+              <div className="delete_btn" onClick={() => handleDelete(item.url)}>
+                <img
+                  src={cancel}
+                  alt="cancel_icon"
+                  className="w-[50%] h-[50%] object-contain ml-auto"
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -97,7 +110,6 @@ const Demo = () => {
       </div>
 
       {/* Montrer les résumés */}
-
       <div className="my-10 max-w-full flex justify-center items-center">
         {isFetching ? (
           <img src={loader} alt="loader" className="w-20 h-20 object-contain" />
